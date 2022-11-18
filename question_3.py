@@ -83,18 +83,27 @@ class Rocket(object):
                 has_boosters = True
         return has_capsule and has_floors and has_engines and has_boosters
 
-    def start_rocket(self):
-        if self.is_valid():
-            for part in self.rocket_parts:
-                if isinstance(part, Engine):
-                    part.ignition()
-        else:
-            raise Exception("Your rocket will blow up")
+    def start_engine(self):
+        for part in self.rocket_parts:
+            if isinstance(part, Engine):
+                part.ignition()
 
-    def stop_rocket(self):
+    def stop_engine(self):
         for part in self.rocket_parts:
             if isinstance(part, Engine):
                 part.extinction()
+
+    def launch_rocket(self):
+        if self.is_valid():
+            self.start_engine()
+        else:
+            raise Exception("Your rocket will blow up")
+
+    def hold_rocket(self):
+        self.stop_engine()
+
+    def land_rocket(self):
+        self.start_engine()
 
     def __repr__(self):
         res = ""
@@ -256,14 +265,19 @@ class Booster(RocketPart):
 
 
 rocket_1 = Rocket()
-rocket_1.add_rocket_part(CapsuleP()).add_rocket_part(Floor()).add_rocket_part(Engine()).add_rocket_part(Booster())
+rocket_1.add_rocket_part(CapsuleP()).add_rocket_part(Floor()).add_rocket_part(SupraluminalEngine()).\
+    add_rocket_part(Booster())
 print(rocket_1)
+rocket_1.launch_rocket()
 
 rocket_2 = Rocket()
 rocket_2.add_rocket_part(CapsuleC()).add_rocket_part(Floor()).add_rocket_part(Floor()).add_rocket_part(Floor()).\
-    add_rocket_part(Engine()).add_rocket_part(Booster())
+    add_rocket_part(IonicEngine()).add_rocket_part(Booster())
 print(rocket_2)
 # OR
-rocket_2 = Rocket.create_from_rocket_parts([CapsuleC(), Floor(), Floor(), Floor(), Engine(), Booster()])
+rocket_2 = Rocket.create_from_rocket_parts([CapsuleC(), Floor(), Floor(), Floor(), IonicEngine(), Booster()])
 print(rocket_2)
+rocket_2.launch_rocket()
+rocket_2.hold_rocket()
+rocket_2.land_rocket()
 
